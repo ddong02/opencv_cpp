@@ -8,15 +8,15 @@ int main(void)
     if (src.empty()) { cerr << "Image load failed!" << endl; return -1;}
 
     float data[] = {
-        1/9.0, 1/9.0, 1/9.0,
-        1/9.0, 1/9.0, 1/9.0,
-        1/9.0, 1/9.0, 1/9.0
-    Í};
+        -1, 0, 1,
+        -2, 0, 2,
+        -1, 0, 1
+    };
 
     Mat emboss(3, 3, CV_32FC1, data);
     Mat dst;
 
-    filter2D(src, dst, -1, emboss, Point(-1, -1), 0);
+    filter2D(src, dst, -1, emboss, Point(-1, -1), 128);
 
     imshow("src", src);
     imshow("dst", dst);
