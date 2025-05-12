@@ -15,11 +15,14 @@ int main(void)
 
     Mat emboss(3, 3, CV_32FC1, data);
     Mat dst;
+    Mat dst2;
 
-    filter2D(src, dst, -1, emboss, Point(-1, -1), 128);
+    filter2D(src, dst, -1, emboss, Point(-1, -1), 0);
+    filter2D(src, dst2, -1, emboss, Point(-1, -1), 128);
 
     imshow("src", src);
     imshow("dst", dst);
+    imshow("dst2", dst2);
 
     waitKey();
 
