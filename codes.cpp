@@ -1,214 +1,187 @@
-/* 5-2
+// 2025-05-20
+// chap 8-1
 
-### 1
+// 01
 
-#include <opencv2/opencv.hpp>
-#include <iostream>
+// #include <opencv2/opencv.hpp>
+// #include <iostream>
 
-using namespace cv;
-using namespace std;
+// using namespace cv;
+// using namespace std;
 
-void on_mouse(int event, int x, int y, int flags, void* param); 
-int main(void)
-{
-    Mat src = imread("lenna.bmp", IMREAD_GRAYSCALE);
-    if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
+// int main(void)
+// {
+//     Mat src = imread("images/lenna.bmp");
+//     if (src.empty()) { cerr << "Image load failed!" << endl; return -1;}
+//     Point2f srcPts[3], dstPts[3];
+//     srcPts[0] = Point2f(0, 0);
+//     srcPts[1] = Point2f(src.cols - 1, 0);
+//     srcPts[2] = Point2f(src.cols - 1, src.rows - 1);
+//     dstPts[0] = Point2f(0, 0);
+//     dstPts[1] = Point2f(src.cols / 2, 0);
+//     dstPts[2] = Point2f(src.cols / 2, src.rows / 2);
+//     Mat M = getAffineTransform(srcPts, dstPts);
+//     cout << M << endl;
+//     Mat dst;
+//     warpAffine(src, dst, M, Size());
+//     imshow("src", src);
+//     imshow("dst", dst);
+//     waitKey();
+//     return 0;
+// }
 
-    namedWindow("src");
-    setMouseCallback("src", on_mouse, &src);
+// 2025-05-20
+// chap 8-1
 
-    while(true) {
-        imshow("src",src);
-        if (waitKey(5) != -1) break;
-    }
+// 02
 
-    return 0;
-}
-void on_mouse(int event, int x, int y, int flags, void* param)
-{
-    Mat* img_ptr = (Mat*)param;
-    if (event == EVENT_LBUTTONDOWN)
-        *img_ptr += 10;
-    else if (event == EVENT_RBUTTONDOWN)
-        *img_ptr -= 10;
-}
+// #include <opencv2/opencv.hpp>
+// #include <iostream>
 
-*/
+// using namespace cv;
+// using namespace std;
 
-/*
+// int main(void)
+// {
+//     Mat src = imread("images/lenna.bmp");
+//     if (src.empty()) { cerr << "Image load failed!" << endl; return -1;}
 
-### 2
+//     Point2f srcPts[3], dstPts[3];
+//     srcPts[0] = Point2f(0, 0);
+//     srcPts[1] = Point2f(src.cols - 1, 0);
+//     srcPts[2] = Point2f(src.cols - 1, src.rows - 1);
+//     dstPts[0] = Point2f(0, 0);
+//     dstPts[1] = Point2f(src.cols / 2, 0);
+//     dstPts[2] = Point2f(src.cols / 2, src.rows / 2);
 
-#include <opencv2/opencv.hpp>
-#include <iostream>
+//     Mat M = getAffineTransform(srcPts, dstPts);
 
-using namespace cv;
-using namespace std;
+//     Mat dst;
+//     warpAffine(src, dst, M, Size());
 
-void on_mouse(int event, int x, int y, int flags, void* param); 
-int main(void)
-{
-    Mat src = imread("lenna.bmp", IMREAD_GRAYSCALE);
-    if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
+//     vector<Point2f> src_center = {Point2f(src.cols / 2, src.rows / 2)};
+//     vector<Point2f> dst_center;
+//     transform(src_center, dst_center, M);
+    
+//     cout << "src center : " << src_center[0] << endl;
+//     cout << "dst center : " << dst_center[0] << endl;
 
-    namedWindow("src");
-    setMouseCallback("src", on_mouse, &src);
+//     imshow("src", src);
+//     imshow("dst", dst);
+//     waitKey();
 
-    while(true) {
-        imshow("src",src);
-        if (waitKey(5) != -1) break;
-    }
+//     return 0;
+// }
 
-    return 0;
-}
-void on_mouse(int event, int x, int y, int flags, void* param)
-{
-    Mat* img_ptr = (Mat*)param;
-    static Point prev_pt;
+// 2025-05-20
+// chap 8-1
 
-    if (event == EVENT_LBUTTONDOWN)
-        prev_pt = Point(x, y);
-    else if (event == EVENT_LBUTTONUP) {
-        if (prev_pt.x < x && prev_pt.y < y)
-            (*img_ptr)(Range(prev_pt.y, y), Range(prev_pt.x, x)) += 100;
-    }
-}
+// 03
 
+// #include <opencv2/opencv.hpp>
+// #include <iostream>
 
+// using namespace cv;
+// using namespace std;
 
-*/
+// int main(void)
+// {
+//     Mat src = imread("images/lenna.bmp");
+//     if (src.empty()) { cerr << "Image load failed!" << endl; return -1;}
 
-/*
+//     Point2f srcPts[3], dstPts[3];
+//     srcPts[0] = Point2f(0, 0);
+//     srcPts[1] = Point2f(src.cols - 1, 0);
+//     srcPts[2] = Point2f(src.cols - 1, src.rows - 1);
+//     dstPts[0] = Point2f(0, 0);
+//     dstPts[1] = Point2f(src.cols * 2 - 1, 0);
+//     dstPts[2] = Point2f(src.cols * 2 - 1, src.rows * 2 - 1);
 
-### 3
+//     Mat M = getAffineTransform(srcPts, dstPts);
+//     cout << M << endl;
 
-#include <opencv2/opencv.hpp>
-#include <iostream>
+//     Mat dst;
+//     warpAffine(src, dst, M, Size(src.cols * 2, src.rows * 2));
 
-using namespace cv;
-using namespace std;
+//     cout << src.size() << endl;
+//     cout << dst.size() << endl;
 
-struct Mydata {
-    int pos;
-    Mat* src_ptr;
-};
+//     imshow("src", src);
+//     imshow("dst", dst);
+//     waitKey();
 
-void on_mouse(int event, int x, int y, int flags, void* userdata);
-void on_trackbar(int pos, void* userdata);
+//     return 0;
+// }
 
-int main(void)
-{
-    Mat src = imread("lenna.bmp", IMREAD_GRAYSCALE);
-    if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
+// 2025-05-20
+// chap 8-1
 
-    int pos = 0;
-    Mydata mydata = {pos, &src};
+// 04
 
-    namedWindow("src");
-    setMouseCallback("src", on_mouse, &mydata);
-    createTrackbar("mode", "src", 0, 1, on_trackbar, &mydata);
+// #include <opencv2/opencv.hpp>
+// #include <iostream>
 
-    while(true) {
-        imshow("src",src);
-        if (waitKey(5) != -1) break;
-    }
+// using namespace cv;
+// using namespace std;
 
-    return 0;
-}
-void on_trackbar(int pos, void* userdata)
-{
-    ((Mydata*)userdata)->pos = pos;
-}
-void on_mouse(int event, int x, int y, int flags, void* userdata)
-{
-    Mydata* data_ptr = (Mydata*)userdata;
-    Mat src = *(data_ptr->src_ptr);
-    if (event == EVENT_LBUTTONDOWN)
-        src = data_ptr->pos ? src - 10 : src + 10;
-}
+// int main(void)
+// {
+//     VideoCapture cap(1);
+//     if (!cap.isOpened()) { cerr << "Camera open failed!" << endl; return -1; }
 
+//     Mat frame;
+//     int key = -1;
 
-*/
+//     cap >> frame;
 
-/*
+//     Point2f orgPts[3];
+//     orgPts[0] = Point2f(0, 0);
+//     orgPts[1] = Point2f(frame.cols - 1, 0);
+//     orgPts[2] = Point2f(frame.cols - 1, frame.rows - 1);
 
-### 4
+//     Point2f zoominPts[3];
+//     zoominPts[0] = Point2f(0, 0);
+//     zoominPts[1] = Point2f(frame.cols * 2 - 1, 0);
+//     zoominPts[2] = Point2f(frame.cols * 2 - 1, frame.rows * 2 - 1);
 
-#include <opencv2/opencv.hpp>
-#include <iostream>
+//     Point2f zoomoutPts[3];
+//     zoomoutPts[0] = Point2f(0, 0);
+//     zoomoutPts[1] = Point2f(frame.cols / 2 - 1, 0);
+//     zoomoutPts[2] = Point2f(frame.cols / 2 - 1, frame.rows / 2 - 1);
 
-using namespace cv;
-using namespace std;
+//     Mat M;
 
-void on_mouse(int event, int x, int y, int flags, void* userdata);
+//     bool zoomout = false;
+//     bool zoomin = false;
 
-int main(void)
-{
-    Mat src = imread("lenna.bmp", IMREAD_GRAYSCALE);
-    if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
+//     while (true) {
+//         cap >> frame;
+        
+//         if (zoomout) {            
+//             M = getAffineTransform(orgPts, zoomoutPts);
+//             warpAffine(frame, frame, M, Size());
+//         }
+//         else if (zoomin) {
+//             M = getAffineTransform(orgPts, zoominPts);
+//             warpAffine(frame, frame, M, Size());
+//         }
+//         imshow("camera", frame);
+//         key = waitKey(5);
 
-    namedWindow("src");
-    setMouseCallback("src", on_mouse, &src);
+//         if (key == 'q') break;
+//         if (key == 'a') {
+//             zoomout = true;
+//             zoomin = false;
+//         }
+//         if (key == 'b'){
+//             zoomin = true;
+//             zoomout = false;
+//         }
+//         if (key == 'c') {
+//             zoomin = false;
+//             zoomout = false;
+//         }
+//     }
 
-    while(true) {
-        imshow("src",src);
-        if (waitKey(5) != -1) break;
-    }
-
-    return 0;
-}
-
-void on_mouse(int event, int x, int y, int flags, void* userdata)
-{
-    Mat src = *((Mat*)userdata);
-    int pixel_change = 100;
-
-    if (event == EVENT_MOUSEMOVE) {
-        if (flags & EVENT_FLAG_LBUTTON) {
-            cout << "Event occured" << endl;
-            src.at<uchar>(y, x) = saturate_cast<uchar>(src.at<uchar>(y, x) + pixel_change);
-            src.at<uchar>(y-1, x) = saturate_cast<uchar>(src.at<uchar>(y-1, x) + pixel_change);
-            src.at<uchar>(y+1, x) = saturate_cast<uchar>(src.at<uchar>(y+1, x) + pixel_change);
-            src.at<uchar>(y, x-1) = saturate_cast<uchar>(src.at<uchar>(y, x-1) + pixel_change);
-            src.at<uchar>(y, x+1) = saturate_cast<uchar>(src.at<uchar>(y, x+1) + pixel_change);
-        }
-    }
-}
-
-*/
-
-/*  5-2
-
-### 1
-
-### 2
-#include <opencv2/opencv.hpp>
-#include <iostream>
-using namespace cv;
-using namespace std;
-int main(void)
-{
-    Mat src = imread("lenna.bmp", IMREAD_GRAYSCALE);
-    if (src.empty()) {
-        cerr << "Image load failed!" << endl;
-        return -1;
-     }
-    float alpha = 1.f;
-    Mat dst = Mat(src.rows, src.cols, src.type());
-
-    uchar src_pixel;
-    for (int row = 0; row < src.rows; row++) {
-        for (int col = 0; col < src.cols; col++) {
-            src_pixel = src.at<uchar>(row, col);
-            dst.at<uchar>(row, col)
-                = saturate_cast<uchar>(src_pixel + (src_pixel - 128) * alpha);
-        }
-    }
-
-    imshow("src", src);
-    imshow("dst", dst);
-    waitKey();
-return 0;
-}
-
-*/
+//     return 0;
+// }
