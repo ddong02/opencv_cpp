@@ -1,49 +1,72 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
-using namespace cv;
 using namespace std;
+using namespace cv;
 
-int main(void)
+Mat calcGrayHist(const Mat& img)
 {
-    Mat src = imread("images/lenna.bmp");
+    CV_Assert(img.type() == CV_8UC1);
+
+    Mat hist;
+    int channels[] = {0};
+    int dims = 1;
+    const int histSize[] = {256};
+    float graylevel[] = {0, 256};
+    const float* ranges[] = {graylevel};
+
+    calcHist(&img, 1, channels, noArray(), hist, dims, histSize, ranges);
+    return hist;
+}
+
+Mat getGrayHistImage(const Mat& hist)
+{
+    CV_Assert(hist.type() == CV_32F);
+    CV_Assert(hist.size() == Size(1, 256));
+
+    double histMax;
+    minMaxLoc(hist, 0, &histMax);
+
+    Mat histImage(100, 256, CV_8UC1, Scalar(255));
+    for (int i = 0; i < 256; i++) {
+        float binVal = hist.at<float>(i, 0);
+        int intensity = cvRound(binVal * 100 / histMax);
+        line(histImage, Point(i, 100), Point(i, 100 - intensity), Scalar(0));
+    }
+
+    return histImage;
+}
+
+int main()
+{
+    // 1. 이미지 불러오기
+    Mat src = imread("images/lenna.bmp", IMREAD_GRAYSCALE);
     if (src.empty()) {
-        cerr << "Image load failed!" << endl;
+        cerr << "Error: Image load failed!" << endl;
         return -1;
     }
 
-    imshow("src", src);
-    Mat dst;
+    // 2. 히스토그램 계산 및 시각화
+    Mat hist = calcGrayHist(src);
+    Mat histImage = getGrayHistImage(hist);
+    imshow("Histogram", histImage);
 
-    int flipCode[] = { 1, 0, -1 };
-    for (int i = 0; i < 3; i++) {
-        Mat affine;
+    // 3. 적응형 이진화
+    Mat adaptive_binary;
+    adaptiveThreshold(
+        src, adaptive_binary,
+        255,                       // 최대값
+        ADAPTIVE_THRESH_MEAN_C,   // 또는 ADAPTIVE_THRESH_GAUSSIAN_C
+        THRESH_BINARY,
+        11,  // blockSize (이웃 영역 크기, 홀수)
+        5    // C 값 (평균에서 빼는 값, 조정용)
+    );
 
-        int w = src.cols;
-        int h = src.rows;
+    // 4. 결과 출력
+    imshow("Original Image", src);
+    imshow("Adaptive Binary", adaptive_binary);
 
-        if (flipCode[i] == 1) {
-            affine = (Mat_<double>(2, 3) << -1, 0, w - 1,
-                                             0, 1, 0);
-        }
-        else if (flipCode[i] == 0) {
-            affine = (Mat_<double>(2, 3) << 1, 0, 0,
-                                            0, -1, h - 1);
-        }
-        else if (flipCode[i] == -1) {
-            affine = (Mat_<double>(2, 3) << -1, 0, w - 1,
-                                             0, -1, h - 1);
-        }
-
-        warpAffine(src, dst, affine, src.size(), INTER_LINEAR, BORDER_CONSTANT, Scalar(0,0,0));
-
-        String desc = format("flipCode: %d", flipCode[i]);
-        putText(dst, desc, Point(10, 30), FONT_HERSHEY_SIMPLEX, 1.0,
-                Scalar(255, 0, 0), 1, LINE_AA);
-
-        imshow("dst", dst);
-        waitKey();
-    }
-
+    waitKey(0);
+    destroyAllWindows();
     return 0;
 }

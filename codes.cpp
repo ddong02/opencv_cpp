@@ -1,89 +1,161 @@
-// 2025-05-20
-// chap 8-2
+// 2025-05-26
+// chap 11-1
 
-// 1
+// 02
 
 // #include <opencv2/opencv.hpp>
-// using namespace cv;
+// #include <iostream>
+
 // using namespace std;
-// int main(void)
+// using namespace cv;
+
+// // 회색조 히스토그램 계산 함수
+// Mat calcGrayHist(const Mat& img)
 // {
-//     Mat src = imread("images/lenna.bmp");
-//     if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
-    
-//     Point2f srcPts[3], dstPts[3];
-//     srcPts[0] = Point2f(0, 0);
-//     srcPts[1] = Point2f(src.cols - 1, 0);
-//     srcPts[2] = Point2f(src.cols - 1, src.rows - 1);
-//     dstPts[0] = Point2f(150, 100);
-//     dstPts[1] = Point2f(src.cols + 150 - 1, 100);
-//     dstPts[2] = Point2f(src.cols + 150 - 1, src.rows + 100 - 1);
+//     CV_Assert(img.type() == CV_8UC1);
 
-//     Mat M = getAffineTransform(srcPts, dstPts);
-//     cout << M << endl;
+//     Mat hist;
+//     int channels[] = {0};
+//     int dims = 1;
+//     const int histSize[] = {256};
+//     float graylevel[] = {0, 256};
+//     const float* ranges[] = {graylevel};
 
-//     Mat dst;
-//     warpAffine(src, dst, M, Size());
-//     imshow("src", src);
-//     imshow("dst", dst);
-//     waitKey();
+//     calcHist(&img, 1, channels, noArray(), hist, dims, histSize, ranges);
+//     return hist;
+// }
+
+// // 히스토그램 시각화 함수
+// Mat getGrayHistImage(const Mat& hist)
+// {
+//     CV_Assert(hist.type() == CV_32F);
+//     CV_Assert(hist.size() == Size(1, 256));
+
+//     double histMax;
+//     minMaxLoc(hist, 0, &histMax);
+
+//     Mat histImage(100, 256, CV_8UC1, Scalar(255));
+//     for (int i = 0; i < 256; i++) {
+//         float binVal = hist.at<float>(i, 0);
+//         int intensity = cvRound(binVal * 100 / histMax);
+//         line(histImage, Point(i, 100), Point(i, 100 - intensity), Scalar(0));
+//     }
+
+//     return histImage;
+// }
+
+// int main()
+// {
+//     // 1. 이미지 불러오기
+//     Mat src = imread("images/lenna.bmp", IMREAD_GRAYSCALE);
+//     if (src.empty()) {
+//         cerr << "Error: Image load failed!" << endl;
+//         return -1;
+//     }
+
+//     // 2. 히스토그램 계산 및 시각화
+//     Mat hist = calcGrayHist(src);
+//     Mat histImage = getGrayHistImage(hist);
+//     imshow("Histogram", histImage);
+
+//     // 3. Otsu 알고리즘으로 자동 임계값 결정 (출력 따로 받기)
+//     Mat binary;
+//     double thresh_val = threshold(src, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+//     cout << "자동 임계값 (Otsu): " << thresh_val << endl;
+
+//     // 4. 결과 출력
+//     imshow("Original Image", src);    // 원본 이미지 그대로
+//     imshow("Binary Image", binary);   // 이진화된 이미지
+
+//     waitKey(0);
+//     destroyAllWindows();
 //     return 0;
 // }
 
-// 4
+// 03
+
+
+
+
+// 04
 
 // #include <opencv2/opencv.hpp>
-// using namespace cv;
+// #include <iostream>
+
 // using namespace std;
-// int main(void)
+// using namespace cv;
+
+// // 회색조 히스토그램 계산
+// Mat calcGrayHist(const Mat& img)
 // {
-//     Mat src = imread("images/lenna.bmp");
-//     if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
-    
-//     Point2f srcPts[3], dstPts[3];
-//     srcPts[0] = Point2f(0, 0);
-//     srcPts[1] = Point2f(src.cols - 1, 0);
-//     srcPts[2] = Point2f(src.cols - 1, src.rows - 1);
-//     dstPts[0] = Point2f(0, 0);
-//     dstPts[1] = Point2f(src.cols * 2 - 1, 0);
-//     dstPts[2] = Point2f(src.cols * 2 - 1, src.rows * 2 - 1);
+//     CV_Assert(img.type() == CV_8UC1);
 
-//     Mat M = getAffineTransform(srcPts, dstPts);
-//     cout << M << endl;
+//     Mat hist;
+//     int channels[] = {0};
+//     int dims = 1;
+//     const int histSize[] = {256};
+//     float graylevel[] = {0, 256};
+//     const float* ranges[] = {graylevel};
 
-//     Mat dst;
-//     warpAffine(src, dst, M, Size(src.cols * 2, src.rows * 2));
-
-//     cout << src.size() << endl;
-//     cout << dst.size() << endl;
-
-//     imshow("src", src);
-//     imshow("dst", dst);
-
-//     waitKey();
-//     return 0;
+//     calcHist(&img, 1, channels, noArray(), hist, dims, histSize, ranges);
+//     return hist;
 // }
 
-// 5
+// // 히스토그램 시각화
+// Mat getGrayHistImage(const Mat& hist)
+// {
+//     CV_Assert(hist.type() == CV_32F);
+//     CV_Assert(hist.size() == Size(1, 256));
 
-// #include <opencv2/opencv.hpp>
-// using namespace cv;
-// using namespace std;
+//     double histMax;
+//     minMaxLoc(hist, 0, &histMax);
+
+//     Mat imgHist(100, 256, CV_8UC1, Scalar(255));
+//     for (int i = 0; i < 256; i++) {
+//         line(imgHist,
+//              Point(i, 100),
+//              Point(i, 100 - cvRound(hist.at<float>(i, 0) * 100 / histMax)),
+//              Scalar(0));
+//     }
+
+//     return imgHist;
+// }
+
 // int main(void)
 // {
-//     Mat src = imread("images/lenna.bmp");
-//     if (src.empty()) {cerr << "Image load failed!" << endl; return -1;}
-//     Mat dst;
-    
-//     Mat M = Mat_<double>({ 2, 3 }, { 0.5, 0, 0, 0, 0.5, 0 }); 
-//     warpAffine(src, dst, M, Size());
+//     VideoCapture cap("images/line.mp4");
+//     if (!cap.isOpened()) {
+//         cerr << "Error: Cannot open the video file!" << endl;
+//         return -1;
+//     }
 
-//     M = Mat_<double>({ 2, 3 }, { 1, 0, src.cols * 0.25 - 1, 0, 1, src.rows * 0.25 - 1 });
-//     warpAffine(dst, dst, M, Size());
+//     Mat frame, gray, binary;
 
-//     imshow("src", src);
-//     imshow("dst2", dst);
+//     while (true) {
+//         cap >> frame;
+//         if (frame.empty())
+//             break;
 
-//     waitKey();
+//         cvtColor(frame, gray, COLOR_BGR2GRAY);
+
+//         // 히스토그램 계산 및 출력
+//         Mat hist = calcGrayHist(gray);
+//         Mat histImg = getGrayHistImage(hist);
+//         imshow("Histogram", histImg);
+
+//         // 자동 임계값 찾기 (Otsu)
+//         double thresh_val = threshold(gray, binary, 0, 255, THRESH_BINARY | THRESH_OTSU);
+
+//         // 이진 영상 출력
+//         imshow("Binary", binary);
+//         imshow("Frame", frame);
+//         cout << "Current Otsu Threshold: " << thresh_val << endl;
+
+//         char key = waitKey(30);
+//         if (key == 27 || key == 'q') break; // ESC or q to quit
+//     }
+
+//     cap.release();
+//     destroyAllWindows();
 //     return 0;
 // }

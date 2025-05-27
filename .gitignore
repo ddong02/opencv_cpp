@@ -1,3 +1,8 @@
 main
 images/
 .vscode/
+.DS_Store
+draw_histogram.cpp
+.gitignore
+.vscode/settings.json
+draw_histogram.hpp
