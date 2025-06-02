@@ -6,3 +6,4 @@ draw_histogram.cpp
 .gitignore
 .vscode/settings.json
 draw_histogram.hpp
+.vscode/settings.json
